@@ -2,7 +2,7 @@
 
 Welcome to my technical portfolio! This repository contains architectural blueprints and custom scripts for complex business automations I've designed using **n8n** and **Make.com**.
 
-> 📊 **Business Cases & Impact:** For detailed case studies and demonstrations of these workflows in action, please visit my [Notion Portfolio](https://hail-gear-881.notion.site/Aleksandr-Automation-Portfolio-2b90054fae90803c9d23cda7d2f3f8e3).
+> 📊 **Business Cases & Impact:** For detailed case studies and demonstrations of these workflows in action, please visit my [Notion Portfolio](https://alsem.notion.site/My-Portfolio-2b90054fae90803c9d23cda7d2f3f8e3).
 
 ---
 
