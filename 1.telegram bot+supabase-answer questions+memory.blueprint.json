@@ -1,0 +1,2201 @@
+{
+    "name": "!!!telegram bot+supabase",
+    "flow": [
+        {
+            "id": 1,
+            "module": "telegram:WatchUpdates",
+            "version": 1,
+            "parameters": {
+                "__IMTHOOK__": 3446829
+            },
+            "mapper": {},
+            "metadata": {
+                "designer": {
+                    "x": -675,
+                    "y": -191
+                },
+                "restore": {
+                    "parameters": {
+                        "__IMTHOOK__": {
+                            "data": {
+                                "editable": "false"
+                            },
+                            "label": "TTEESSTT"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTHOOK__",
+                        "type": "hook:telegramapi",
+                        "label": "Webhook",
+                        "required": true
+                    }
+                ]
+            }
+        },
+        {
+            "id": 10,
+            "module": "perplexity-ai:createAChatCompletion",
+            "version": 1,
+            "parameters": {
+                "__IMTCONN__": 12513413
+            },
+            "mapper": {
+                "model": "sonar",
+                "messages": [
+                    {
+                        "role": "user",
+                        "content": "Ты являешься экспертом по поиску информации в реальном времени. Твоя единственная задача — провести поиск в Интернете по следующему запросу и предоставить краткое резюме в 3 предложения, основанное только на результатах поиска и выдать результат (без приветствий или лишнего текста). Запрос: {{1.message.text}}"
+                    }
+                ],
+                "max_tokens": "300",
+                "temperature": "0.5",
+                "web_search_options": {
+                    "search_context_size": "medium"
+                }
+            },
+            "metadata": {
+                "designer": {
+                    "x": -484,
+                    "y": 120
+                },
+                "restore": {
+                    "expect": {
+                        "model": {
+                            "mode": "chose",
+                            "label": "sonar"
+                        },
+                        "messages": {
+                            "mode": "chose",
+                            "items": [
+                                {
+                                    "role": {
+                                        "mode": "chose",
+                                        "label": "User"
+                                    }
+                                }
+                            ]
+                        },
+                        "return_images": {
+                            "mode": "chose"
+                        },
+                        "web_search_options": {
+                            "nested": {
+                                "search_context_size": {
+                                    "mode": "chose",
+                                    "label": "Medium"
+                                }
+                            }
+                        },
+                        "search_domain_filter": {
+                            "mode": "chose"
+                        },
+                        "search_recency_filter": {
+                            "mode": "chose",
+                            "label": "Empty"
+                        },
+                        "return_related_questions": {
+                            "mode": "chose"
+                        }
+                    },
+                    "parameters": {
+                        "__IMTCONN__": {
+                            "data": {
+                                "scoped": "true",
+                                "connection": "perplexity-ai"
+                            },
+                            "label": "My Perplexity connection"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTCONN__",
+                        "type": "account:perplexity-ai",
+                        "label": "Connection",
+                        "required": true
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "model",
+                        "type": "select",
+                        "label": "Model",
+                        "required": true
+                    },
+                    {
+                        "name": "messages",
+                        "spec": [
+                            {
+                                "name": "content",
+                                "type": "text",
+                                "label": "Content",
+                                "required": true
+                            },
+                            {
+                                "name": "role",
+                                "type": "select",
+                                "label": "Role",
+                                "options": [
+                                    {
+                                        "label": "User",
+                                        "value": "user"
+                                    },
+                                    {
+                                        "label": "Assistant",
+                                        "value": "assistant"
+                                    },
+                                    {
+                                        "label": "System",
+                                        "value": "system"
+                                    }
+                                ],
+                                "required": true
+                            }
+                        ],
+                        "type": "array",
+                        "label": "Messages",
+                        "required": true
+                    },
+                    {
+                        "name": "max_tokens",
+                        "type": "number",
+                        "label": "Max Tokens"
+                    },
+                    {
+                        "name": "temperature",
+                        "type": "number",
+                        "label": "Temperature",
+                        "validate": {
+                            "max": 1.999,
+                            "min": 0
+                        }
+                    },
+                    {
+                        "name": "web_search_options",
+                        "spec": [
+                            {
+                                "name": "search_context_size",
+                                "type": "select",
+                                "label": "Search Context Size",
+                                "validate": {
+                                    "enum": [
+                                        "low",
+                                        "medium",
+                                        "high"
+                                    ]
+                                }
+                            }
+                        ],
+                        "type": "collection",
+                        "label": "Web Search Options"
+                    },
+                    {
+                        "name": "top_p",
+                        "type": "number",
+                        "label": "Top P",
+                        "validate": {
+                            "max": 1,
+                            "min": 0
+                        }
+                    },
+                    {
+                        "name": "top_k",
+                        "type": "number",
+                        "label": "Top K",
+                        "validate": {
+                            "max": 2048,
+                            "min": 0
+                        }
+                    },
+                    {
+                        "name": "presence_penalty",
+                        "type": "number",
+                        "label": "Presence Penalty",
+                        "validate": {
+                            "max": 2,
+                            "min": -2
+                        }
+                    },
+                    {
+                        "name": "frequency_penalty",
+                        "type": "number",
+                        "label": "Frequency Penalty",
+                        "validate": {
+                            "min": 0
+                        }
+                    },
+                    {
+                        "name": "search_domain_filter",
+                        "spec": {
+                            "name": "value",
+                            "type": "text"
+                        },
+                        "type": "array",
+                        "label": "Search Domain Filter"
+                    },
+                    {
+                        "name": "search_recency_filter",
+                        "type": "select",
+                        "label": "Search Recency Filter",
+                        "validate": {
+                            "enum": [
+                                "month",
+                                "week",
+                                "day",
+                                "hour"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "return_images",
+                        "type": "boolean",
+                        "label": "Return Images"
+                    },
+                    {
+                        "name": "return_related_questions",
+                        "type": "boolean",
+                        "label": "Return Related Questions"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 2,
+            "module": "supabase:searchRows",
+            "version": 1,
+            "parameters": {
+                "__IMTCONN__": 12509699
+            },
+            "mapper": {
+                "limit": "1",
+                "table": "111",
+                "search": [
+                    [
+                        {
+                            "a": "telegram_user_id",
+                            "b": "{{1.message.chat.id}}",
+                            "o": "text:eq."
+                        }
+                    ]
+                ]
+            },
+            "metadata": {
+                "designer": {
+                    "x": -282,
+                    "y": -191
+                },
+                "restore": {
+                    "expect": {
+                        "table": {
+                            "mode": "edit",
+                            "nested": [
+                                {
+                                    "name": "search",
+                                    "type": "filter",
+                                    "label": "Search criteria",
+                                    "options": {
+                                        "logic": "and",
+                                        "store": [
+                                            {
+                                                "label": "id",
+                                                "value": "id"
+                                            },
+                                            {
+                                                "label": "telegram_user_id",
+                                                "value": "telegram_user_id"
+                                            },
+                                            {
+                                                "label": "openai_thread_id",
+                                                "value": "openai_thread_id"
+                                            },
+                                            {
+                                                "label": "history",
+                                                "value": "history"
+                                            }
+                                        ],
+                                        "operators": [
+                                            {
+                                                "label": "Text",
+                                                "options": [
+                                                    {
+                                                        "label": "Equals",
+                                                        "value": "text:eq."
+                                                    },
+                                                    {
+                                                        "label": "Does not equal",
+                                                        "value": "text:neq."
+                                                    },
+                                                    {
+                                                        "label": "Contains (case sensitive)",
+                                                        "value": "text:like."
+                                                    },
+                                                    {
+                                                        "label": "Contains (case insensitive)",
+                                                        "value": "text:ilike."
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "label": "Numbers",
+                                                "options": [
+                                                    {
+                                                        "label": "Equals",
+                                                        "value": "number:eq."
+                                                    },
+                                                    {
+                                                        "label": "Does not equal",
+                                                        "value": "number:neq."
+                                                    },
+                                                    {
+                                                        "label": "Greater than",
+                                                        "value": "number:gt."
+                                                    },
+                                                    {
+                                                        "label": "Less than",
+                                                        "value": "number:lt."
+                                                    },
+                                                    {
+                                                        "label": "Greater than or equal to",
+                                                        "value": "number:gte."
+                                                    },
+                                                    {
+                                                        "label": "Less than or equal to",
+                                                        "value": "number:lte."
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "label": "Date",
+                                                "options": [
+                                                    {
+                                                        "label": "Equals",
+                                                        "value": "date:eq."
+                                                    },
+                                                    {
+                                                        "label": "Does not equal",
+                                                        "value": "date:neq."
+                                                    },
+                                                    {
+                                                        "label": "Later than",
+                                                        "value": "date:gt."
+                                                    },
+                                                    {
+                                                        "label": "Earlier than",
+                                                        "value": "date:lt."
+                                                    },
+                                                    {
+                                                        "label": "Later than or equal to",
+                                                        "value": "date:gte."
+                                                    },
+                                                    {
+                                                        "label": "Earlier than or equal to",
+                                                        "value": "date:lte."
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "label": "Boolean",
+                                                "options": [
+                                                    {
+                                                        "label": "Equals",
+                                                        "value": "boolean:eq."
+                                                    },
+                                                    {
+                                                        "label": "Does not equal",
+                                                        "value": "boolean:neq."
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "parameters": {
+                        "__IMTCONN__": {
+                            "data": {
+                                "scoped": "true",
+                                "connection": "supabase"
+                            },
+                            "label": "My Supabase connection"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTCONN__",
+                        "type": "account:supabase",
+                        "label": "Connection",
+                        "required": true
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "table",
+                        "type": "select",
+                        "label": "Table",
+                        "required": true
+                    },
+                    {
+                        "name": "limit",
+                        "type": "uinteger",
+                        "label": "Limit"
+                    },
+                    {
+                        "name": "search",
+                        "type": "filter",
+                        "label": "Search criteria",
+                        "options": {
+                            "logic": "and",
+                            "store": [
+                                {
+                                    "label": "id",
+                                    "value": "id"
+                                },
+                                {
+                                    "label": "telegram_user_id",
+                                    "value": "telegram_user_id"
+                                },
+                                {
+                                    "label": "openai_thread_id",
+                                    "value": "openai_thread_id"
+                                },
+                                {
+                                    "label": "history",
+                                    "value": "history"
+                                }
+                            ],
+                            "operators": [
+                                {
+                                    "label": "Text",
+                                    "options": [
+                                        {
+                                            "label": "Equals",
+                                            "value": "text:eq."
+                                        },
+                                        {
+                                            "label": "Does not equal",
+                                            "value": "text:neq."
+                                        },
+                                        {
+                                            "label": "Contains (case sensitive)",
+                                            "value": "text:like."
+                                        },
+                                        {
+                                            "label": "Contains (case insensitive)",
+                                            "value": "text:ilike."
+                                        }
+                                    ]
+                                },
+                                {
+                                    "label": "Numbers",
+                                    "options": [
+                                        {
+                                            "label": "Equals",
+                                            "value": "number:eq."
+                                        },
+                                        {
+                                            "label": "Does not equal",
+                                            "value": "number:neq."
+                                        },
+                                        {
+                                            "label": "Greater than",
+                                            "value": "number:gt."
+                                        },
+                                        {
+                                            "label": "Less than",
+                                            "value": "number:lt."
+                                        },
+                                        {
+                                            "label": "Greater than or equal to",
+                                            "value": "number:gte."
+                                        },
+                                        {
+                                            "label": "Less than or equal to",
+                                            "value": "number:lte."
+                                        }
+                                    ]
+                                },
+                                {
+                                    "label": "Date",
+                                    "options": [
+                                        {
+                                            "label": "Equals",
+                                            "value": "date:eq."
+                                        },
+                                        {
+                                            "label": "Does not equal",
+                                            "value": "date:neq."
+                                        },
+                                        {
+                                            "label": "Later than",
+                                            "value": "date:gt."
+                                        },
+                                        {
+                                            "label": "Earlier than",
+                                            "value": "date:lt."
+                                        },
+                                        {
+                                            "label": "Later than or equal to",
+                                            "value": "date:gte."
+                                        },
+                                        {
+                                            "label": "Earlier than or equal to",
+                                            "value": "date:lte."
+                                        }
+                                    ]
+                                },
+                                {
+                                    "label": "Boolean",
+                                    "options": [
+                                        {
+                                            "label": "Equals",
+                                            "value": "boolean:eq."
+                                        },
+                                        {
+                                            "label": "Does not equal",
+                                            "value": "boolean:neq."
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "interface": [
+                    {
+                        "name": "__IMTLENGTH__",
+                        "type": "uinteger",
+                        "label": "Total number of bundles"
+                    },
+                    {
+                        "name": "__IMTINDEX__",
+                        "type": "uinteger",
+                        "label": "Bundle order position"
+                    },
+                    {
+                        "name": "id",
+                        "type": "number",
+                        "label": "id"
+                    },
+                    {
+                        "name": "telegram_user_id",
+                        "type": "text",
+                        "label": "telegram_user_id"
+                    },
+                    {
+                        "name": "openai_thread_id",
+                        "type": "text",
+                        "label": "openai_thread_id"
+                    },
+                    {
+                        "name": "history",
+                        "type": "text",
+                        "label": "history"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 3,
+            "module": "builtin:BasicRouter",
+            "version": 1,
+            "mapper": null,
+            "metadata": {
+                "designer": {
+                    "x": -113,
+                    "y": 33
+                }
+            },
+            "routes": [
+                {
+                    "flow": [
+                        {
+                            "id": 11,
+                            "module": "supabase:createARow",
+                            "version": 1,
+                            "parameters": {
+                                "__IMTCONN__": 12509699
+                            },
+                            "filter": {
+                                "name": "existing user",
+                                "conditions": [
+                                    [
+                                        {
+                                            "a": "{{2.`__IMTLENGTH__`}}",
+                                            "b": "0",
+                                            "o": "text:notequal"
+                                        }
+                                    ]
+                                ]
+                            },
+                            "mapper": {
+                                "role": "user",
+                                "table": "222(dialog history)",
+                                "content": "{{1.message.text}}",
+                                "thread_id": "{{2.openai_thread_id}}",
+                                "created_at": "{{1.message.date}}"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 283,
+                                    "y": 224
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "table": {
+                                            "mode": "chose",
+                                            "label": "222(dialog history)",
+                                            "nested": [
+                                                {
+                                                    "help": "Note:\nThis is a Primary Key.<pk/>",
+                                                    "name": "id",
+                                                    "type": "integer",
+                                                    "label": "id",
+                                                    "options": null,
+                                                    "required": false
+                                                },
+                                                {
+                                                    "help": "",
+                                                    "name": "created_at",
+                                                    "type": "text",
+                                                    "label": "created_at",
+                                                    "options": null,
+                                                    "required": false
+                                                },
+                                                {
+                                                    "help": "",
+                                                    "name": "thread_id",
+                                                    "type": "text",
+                                                    "label": "thread_id",
+                                                    "options": null,
+                                                    "required": false
+                                                },
+                                                {
+                                                    "help": "",
+                                                    "name": "role",
+                                                    "type": "text",
+                                                    "label": "role",
+                                                    "options": null,
+                                                    "required": false
+                                                },
+                                                {
+                                                    "help": "",
+                                                    "name": "content",
+                                                    "type": "text",
+                                                    "label": "content",
+                                                    "options": null,
+                                                    "required": false
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "parameters": {
+                                        "__IMTCONN__": {
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "supabase"
+                                            },
+                                            "label": "My Supabase connection"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "__IMTCONN__",
+                                        "type": "account:supabase",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "table",
+                                        "type": "select",
+                                        "label": "Table",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "id",
+                                        "type": "integer"
+                                    },
+                                    {
+                                        "name": "created_at",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "name": "thread_id",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "name": "role",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "name": "content",
+                                        "type": "text"
+                                    }
+                                ],
+                                "interface": [
+                                    {
+                                        "name": "id",
+                                        "type": "number",
+                                        "label": "id"
+                                    },
+                                    {
+                                        "name": "created_at",
+                                        "type": "text",
+                                        "label": "created_at"
+                                    },
+                                    {
+                                        "name": "thread_id",
+                                        "type": "text",
+                                        "label": "thread_id"
+                                    },
+                                    {
+                                        "name": "role",
+                                        "type": "text",
+                                        "label": "role"
+                                    },
+                                    {
+                                        "name": "content",
+                                        "type": "text",
+                                        "label": "content"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 5,
+                            "module": "openai-gpt-3:messageAssistantAdvanced",
+                            "version": 1,
+                            "parameters": {
+                                "__IMTCONN__": 10455735
+                            },
+                            "filter": {
+                                "name": "existing user",
+                                "conditions": [
+                                    [
+                                        {
+                                            "a": "{{2.`__IMTLENGTH__`}}",
+                                            "b": "0",
+                                            "o": "text:notequal"
+                                        }
+                                    ]
+                                ]
+                            },
+                            "mapper": {
+                                "role": "user",
+                                "message": "[ЗАПРОС ПОЛЬЗОВАТЕЛЯ]\n{{1.message.text}}\n[/ЗАПРОС ПОЛЬЗОВАТЕЛЯ]\n[КОНТЕКСТ ИЗ PERPLEXITY]\n{{10.choices[].message.content}}\n[/КОНТЕКСТ ИЗ PERPLEXITY]",
+                                "threadId": "{{2.openai_thread_id}}",
+                                "assistantId": "asst_Qn8U1zW6InZ4PjJmtK4L4Wnu"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 788,
+                                    "y": 226
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "role": {
+                                            "label": "User"
+                                        },
+                                        "model": {
+                                            "mode": "chose"
+                                        },
+                                        "tools": {
+                                            "mode": "chose"
+                                        },
+                                        "image_urls": {
+                                            "mode": "chose"
+                                        },
+                                        "assistantId": {
+                                            "mode": "chose",
+                                            "label": "Telegram Chat Memory Bot (gpt-4.1-nano)",
+                                            "nested": []
+                                        },
+                                        "image_files": {
+                                            "mode": "chose"
+                                        },
+                                        "tool_choice": {
+                                            "mode": "chose",
+                                            "label": "Empty"
+                                        },
+                                        "response_format": {
+                                            "mode": "chose",
+                                            "label": "Empty"
+                                        },
+                                        "truncation_strategy": {
+                                            "mode": "chose",
+                                            "label": "Empty"
+                                        },
+                                        "file_search_resources": {
+                                            "mode": "chose"
+                                        },
+                                        "code_interpreter_resources": {
+                                            "mode": "chose"
+                                        }
+                                    },
+                                    "parameters": {
+                                        "__IMTCONN__": {
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "openai-gpt-3"
+                                            },
+                                            "label": "My OpenAI connection"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "__IMTCONN__",
+                                        "type": "account:openai-gpt-3",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "assistantId",
+                                        "type": "select",
+                                        "label": "Assistant",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "role",
+                                        "type": "select",
+                                        "label": "Role",
+                                        "required": true,
+                                        "validate": {
+                                            "enum": [
+                                                "user",
+                                                "assistant"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "threadId",
+                                        "type": "text",
+                                        "label": "Thread ID"
+                                    },
+                                    {
+                                        "name": "model",
+                                        "type": "select",
+                                        "label": "Model"
+                                    },
+                                    {
+                                        "name": "tools",
+                                        "type": "select",
+                                        "label": "Tools",
+                                        "multiple": true,
+                                        "validate": {
+                                            "enum": [
+                                                "file_search",
+                                                "code_interpreter"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "file_search_resources",
+                                        "type": "select",
+                                        "label": "File Search Resources"
+                                    },
+                                    {
+                                        "name": "code_interpreter_resources",
+                                        "type": "select",
+                                        "label": "Code Interpreter Resources",
+                                        "multiple": true,
+                                        "validate": {
+                                            "maxItems": 20
+                                        }
+                                    },
+                                    {
+                                        "name": "tool_choice",
+                                        "type": "select",
+                                        "label": "Tool Choice",
+                                        "validate": {
+                                            "enum": [
+                                                "none",
+                                                "auto",
+                                                "required",
+                                                "file_search",
+                                                "code_interpreter",
+                                                "function"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "instructions",
+                                        "type": "text",
+                                        "label": "Instructions"
+                                    },
+                                    {
+                                        "name": "max_prompt_tokens",
+                                        "type": "uinteger",
+                                        "label": "Max Prompt Tokens"
+                                    },
+                                    {
+                                        "name": "max_completion_tokens",
+                                        "type": "uinteger",
+                                        "label": "Max Completion Tokens"
+                                    },
+                                    {
+                                        "name": "temperature",
+                                        "type": "number",
+                                        "label": "Temperature",
+                                        "validate": {
+                                            "max": 2,
+                                            "min": 0
+                                        }
+                                    },
+                                    {
+                                        "name": "top_p",
+                                        "type": "number",
+                                        "label": "Top P",
+                                        "validate": {
+                                            "max": 1,
+                                            "min": 0
+                                        }
+                                    },
+                                    {
+                                        "name": "response_format",
+                                        "type": "select",
+                                        "label": "Response Format",
+                                        "validate": {
+                                            "enum": [
+                                                "auto",
+                                                "json_object",
+                                                "text"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "truncation_strategy",
+                                        "type": "select",
+                                        "label": "Truncation Strategy",
+                                        "validate": {
+                                            "enum": [
+                                                "auto",
+                                                "last_messages"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "message",
+                                        "type": "text",
+                                        "label": "Message",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "image_files",
+                                        "type": "select",
+                                        "label": "Image Files",
+                                        "multiple": true
+                                    },
+                                    {
+                                        "name": "image_urls",
+                                        "spec": {
+                                            "name": "value",
+                                            "type": "url",
+                                            "label": "Image URL",
+                                            "required": true
+                                        },
+                                        "type": "array",
+                                        "label": "Image URLs"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 12,
+                            "module": "supabase:createARow",
+                            "version": 1,
+                            "parameters": {
+                                "__IMTCONN__": 12509699
+                            },
+                            "mapper": {
+                                "role": "assistant",
+                                "table": "222(dialog history)",
+                                "content": "{{5.result}}",
+                                "thread_id": "{{11.thread_id}}",
+                                "created_at": "{{1.message.date}}"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 1261,
+                                    "y": 229
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "table": {
+                                            "mode": "chose",
+                                            "label": "222(dialog history)",
+                                            "nested": [
+                                                {
+                                                    "help": "Note:\nThis is a Primary Key.<pk/>",
+                                                    "name": "id",
+                                                    "type": "integer",
+                                                    "label": "id",
+                                                    "options": null,
+                                                    "required": false
+                                                },
+                                                {
+                                                    "help": "",
+                                                    "name": "created_at",
+                                                    "type": "text",
+                                                    "label": "created_at",
+                                                    "options": null,
+                                                    "required": false
+                                                },
+                                                {
+                                                    "help": "",
+                                                    "name": "thread_id",
+                                                    "type": "text",
+                                                    "label": "thread_id",
+                                                    "options": null,
+                                                    "required": false
+                                                },
+                                                {
+                                                    "help": "",
+                                                    "name": "role",
+                                                    "type": "text",
+                                                    "label": "role",
+                                                    "options": null,
+                                                    "required": false
+                                                },
+                                                {
+                                                    "help": "",
+                                                    "name": "content",
+                                                    "type": "text",
+                                                    "label": "content",
+                                                    "options": null,
+                                                    "required": false
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "parameters": {
+                                        "__IMTCONN__": {
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "supabase"
+                                            },
+                                            "label": "My Supabase connection"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "__IMTCONN__",
+                                        "type": "account:supabase",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "table",
+                                        "type": "select",
+                                        "label": "Table",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "id",
+                                        "type": "integer"
+                                    },
+                                    {
+                                        "name": "created_at",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "name": "thread_id",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "name": "role",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "name": "content",
+                                        "type": "text"
+                                    }
+                                ],
+                                "interface": [
+                                    {
+                                        "name": "id",
+                                        "type": "number",
+                                        "label": "id"
+                                    },
+                                    {
+                                        "name": "created_at",
+                                        "type": "text",
+                                        "label": "created_at"
+                                    },
+                                    {
+                                        "name": "thread_id",
+                                        "type": "text",
+                                        "label": "thread_id"
+                                    },
+                                    {
+                                        "name": "role",
+                                        "type": "text",
+                                        "label": "role"
+                                    },
+                                    {
+                                        "name": "content",
+                                        "type": "text",
+                                        "label": "content"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 8,
+                            "module": "telegram:SendReplyMessage",
+                            "version": 1,
+                            "parameters": {
+                                "__IMTCONN__": 12539108
+                            },
+                            "mapper": {
+                                "text": "{{5.result}}",
+                                "chatId": "{{1.message.chat.id}}",
+                                "parseMode": "HTML",
+                                "replyMarkup": "",
+                                "messageThreadId": "",
+                                "replyToMessageId": "",
+                                "disableWebPagePreview": true,
+                                "replyMarkupAssembleType": "reply_markup_enter"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 1797,
+                                    "y": 221
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "parseMode": {
+                                            "label": "HTML"
+                                        },
+                                        "disableNotification": {
+                                            "mode": "chose"
+                                        },
+                                        "replyMarkupAssembleType": {
+                                            "label": "Enter the Reply Markup"
+                                        }
+                                    },
+                                    "parameters": {
+                                        "__IMTCONN__": {
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "telegram"
+                                            },
+                                            "label": "TTEESSTT_assistant_bot"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "__IMTCONN__",
+                                        "type": "account:telegram",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "chatId",
+                                        "type": "text",
+                                        "label": "Chat ID",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "text",
+                                        "type": "text",
+                                        "label": "Text",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "messageThreadId",
+                                        "type": "number",
+                                        "label": "Message Thread ID"
+                                    },
+                                    {
+                                        "name": "parseMode",
+                                        "type": "select",
+                                        "label": "Parse Mode",
+                                        "validate": {
+                                            "enum": [
+                                                "Markdown",
+                                                "HTML"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "disableNotification",
+                                        "type": "boolean",
+                                        "label": "Disable Notifications"
+                                    },
+                                    {
+                                        "name": "disableWebPagePreview",
+                                        "type": "boolean",
+                                        "label": "Disable Link Previews"
+                                    },
+                                    {
+                                        "name": "replyToMessageId",
+                                        "type": "number",
+                                        "label": "Original Message ID"
+                                    },
+                                    {
+                                        "name": "replyMarkupAssembleType",
+                                        "type": "select",
+                                        "label": "Enter/Assemble the Reply Markup Field",
+                                        "validate": {
+                                            "enum": [
+                                                "reply_markup_enter",
+                                                "reply_markup_assemble"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "replyMarkup",
+                                        "type": "text",
+                                        "label": "Reply Markup"
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "flow": [
+                        {
+                            "id": 13,
+                            "module": "supabase:createARow",
+                            "version": 1,
+                            "parameters": {
+                                "__IMTCONN__": 12509699
+                            },
+                            "filter": {
+                                "name": "New user",
+                                "conditions": [
+                                    [
+                                        {
+                                            "a": "{{2.`__IMTLENGTH__`}}",
+                                            "b": "0",
+                                            "o": "text:equal"
+                                        }
+                                    ]
+                                ]
+                            },
+                            "mapper": {
+                                "role": "user",
+                                "table": "222(dialog history)",
+                                "content": "{{1.message.text}}",
+                                "created_at": "{{1.message.date}}"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 273,
+                                    "y": -215
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "table": {
+                                            "mode": "chose",
+                                            "label": "222(dialog history)",
+                                            "nested": [
+                                                {
+                                                    "help": "Note:\nThis is a Primary Key.<pk/>",
+                                                    "name": "id",
+                                                    "type": "integer",
+                                                    "label": "id",
+                                                    "options": null,
+                                                    "required": false
+                                                },
+                                                {
+                                                    "help": "",
+                                                    "name": "created_at",
+                                                    "type": "text",
+                                                    "label": "created_at",
+                                                    "options": null,
+                                                    "required": false
+                                                },
+                                                {
+                                                    "help": "",
+                                                    "name": "thread_id",
+                                                    "type": "text",
+                                                    "label": "thread_id",
+                                                    "options": null,
+                                                    "required": false
+                                                },
+                                                {
+                                                    "help": "",
+                                                    "name": "role",
+                                                    "type": "text",
+                                                    "label": "role",
+                                                    "options": null,
+                                                    "required": false
+                                                },
+                                                {
+                                                    "help": "",
+                                                    "name": "content",
+                                                    "type": "text",
+                                                    "label": "content",
+                                                    "options": null,
+                                                    "required": false
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "parameters": {
+                                        "__IMTCONN__": {
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "supabase"
+                                            },
+                                            "label": "My Supabase connection"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "__IMTCONN__",
+                                        "type": "account:supabase",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "table",
+                                        "type": "select",
+                                        "label": "Table",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "id",
+                                        "type": "integer"
+                                    },
+                                    {
+                                        "name": "created_at",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "name": "thread_id",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "name": "role",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "name": "content",
+                                        "type": "text"
+                                    }
+                                ],
+                                "interface": [
+                                    {
+                                        "name": "id",
+                                        "type": "number",
+                                        "label": "id"
+                                    },
+                                    {
+                                        "name": "created_at",
+                                        "type": "text",
+                                        "label": "created_at"
+                                    },
+                                    {
+                                        "name": "thread_id",
+                                        "type": "text",
+                                        "label": "thread_id"
+                                    },
+                                    {
+                                        "name": "role",
+                                        "type": "text",
+                                        "label": "role"
+                                    },
+                                    {
+                                        "name": "content",
+                                        "type": "text",
+                                        "label": "content"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 4,
+                            "module": "openai-gpt-3:messageAssistantAdvanced",
+                            "version": 1,
+                            "parameters": {
+                                "__IMTCONN__": 10455735
+                            },
+                            "filter": {
+                                "name": "New user (make thread)",
+                                "conditions": [
+                                    [
+                                        {
+                                            "a": "{{2.`__IMTLENGTH__`}}",
+                                            "b": "0",
+                                            "o": "text:equal"
+                                        }
+                                    ]
+                                ]
+                            },
+                            "mapper": {
+                                "role": "user",
+                                "message": "[ЗАПРОС ПОЛЬЗОВАТЕЛЯ]\n{{1.message.text}}\n[/ЗАПРОС ПОЛЬЗОВАТЕЛЯ]\n[КОНТЕКСТ ИЗ PERPLEXITY]\n{{10.choices[].message.content}}\n[/КОНТЕКСТ ИЗ PERPLEXITY]",
+                                "assistantId": "asst_Qn8U1zW6InZ4PjJmtK4L4Wnu"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 662,
+                                    "y": -217
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "role": {
+                                            "label": "User"
+                                        },
+                                        "model": {
+                                            "mode": "chose"
+                                        },
+                                        "tools": {
+                                            "mode": "chose"
+                                        },
+                                        "image_urls": {
+                                            "mode": "chose"
+                                        },
+                                        "assistantId": {
+                                            "mode": "chose",
+                                            "label": "Telegram Chat Memory Bot (gpt-4.1-nano)",
+                                            "nested": []
+                                        },
+                                        "image_files": {
+                                            "mode": "chose"
+                                        },
+                                        "tool_choice": {
+                                            "mode": "chose",
+                                            "label": "Empty"
+                                        },
+                                        "response_format": {
+                                            "mode": "chose",
+                                            "label": "Empty"
+                                        },
+                                        "truncation_strategy": {
+                                            "mode": "chose",
+                                            "label": "Empty"
+                                        },
+                                        "file_search_resources": {
+                                            "mode": "chose"
+                                        },
+                                        "code_interpreter_resources": {
+                                            "mode": "chose"
+                                        }
+                                    },
+                                    "parameters": {
+                                        "__IMTCONN__": {
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "openai-gpt-3"
+                                            },
+                                            "label": "My OpenAI connection"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "__IMTCONN__",
+                                        "type": "account:openai-gpt-3",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "assistantId",
+                                        "type": "select",
+                                        "label": "Assistant",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "role",
+                                        "type": "select",
+                                        "label": "Role",
+                                        "required": true,
+                                        "validate": {
+                                            "enum": [
+                                                "user",
+                                                "assistant"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "threadId",
+                                        "type": "text",
+                                        "label": "Thread ID"
+                                    },
+                                    {
+                                        "name": "model",
+                                        "type": "select",
+                                        "label": "Model"
+                                    },
+                                    {
+                                        "name": "tools",
+                                        "type": "select",
+                                        "label": "Tools",
+                                        "multiple": true,
+                                        "validate": {
+                                            "enum": [
+                                                "file_search",
+                                                "code_interpreter"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "file_search_resources",
+                                        "type": "select",
+                                        "label": "File Search Resources"
+                                    },
+                                    {
+                                        "name": "code_interpreter_resources",
+                                        "type": "select",
+                                        "label": "Code Interpreter Resources",
+                                        "multiple": true,
+                                        "validate": {
+                                            "maxItems": 20
+                                        }
+                                    },
+                                    {
+                                        "name": "tool_choice",
+                                        "type": "select",
+                                        "label": "Tool Choice",
+                                        "validate": {
+                                            "enum": [
+                                                "none",
+                                                "auto",
+                                                "required",
+                                                "file_search",
+                                                "code_interpreter",
+                                                "function"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "instructions",
+                                        "type": "text",
+                                        "label": "Instructions"
+                                    },
+                                    {
+                                        "name": "max_prompt_tokens",
+                                        "type": "uinteger",
+                                        "label": "Max Prompt Tokens"
+                                    },
+                                    {
+                                        "name": "max_completion_tokens",
+                                        "type": "uinteger",
+                                        "label": "Max Completion Tokens"
+                                    },
+                                    {
+                                        "name": "temperature",
+                                        "type": "number",
+                                        "label": "Temperature",
+                                        "validate": {
+                                            "max": 2,
+                                            "min": 0
+                                        }
+                                    },
+                                    {
+                                        "name": "top_p",
+                                        "type": "number",
+                                        "label": "Top P",
+                                        "validate": {
+                                            "max": 1,
+                                            "min": 0
+                                        }
+                                    },
+                                    {
+                                        "name": "response_format",
+                                        "type": "select",
+                                        "label": "Response Format",
+                                        "validate": {
+                                            "enum": [
+                                                "auto",
+                                                "json_object",
+                                                "text"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "truncation_strategy",
+                                        "type": "select",
+                                        "label": "Truncation Strategy",
+                                        "validate": {
+                                            "enum": [
+                                                "auto",
+                                                "last_messages"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "message",
+                                        "type": "text",
+                                        "label": "Message",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "image_files",
+                                        "type": "select",
+                                        "label": "Image Files",
+                                        "multiple": true
+                                    },
+                                    {
+                                        "name": "image_urls",
+                                        "spec": {
+                                            "name": "value",
+                                            "type": "url",
+                                            "label": "Image URL",
+                                            "required": true
+                                        },
+                                        "type": "array",
+                                        "label": "Image URLs"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 17,
+                            "module": "supabase:upsertARecord",
+                            "version": 1,
+                            "parameters": {
+                                "__IMTCONN__": 12509699
+                            },
+                            "mapper": {
+                                "table": "111",
+                                "openai_thread_id": "{{4.thread_id}}",
+                                "telegram_user_id": "{{1.message.chat.id}}"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 962,
+                                    "y": -217
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "table": {
+                                            "mode": "chose",
+                                            "label": "111",
+                                            "nested": [
+                                                {
+                                                    "help": "Note:\nThis is a Primary Key.<pk/>",
+                                                    "name": "id",
+                                                    "type": "integer",
+                                                    "label": "id",
+                                                    "options": null,
+                                                    "required": false
+                                                },
+                                                {
+                                                    "help": "",
+                                                    "name": "telegram_user_id",
+                                                    "type": "text",
+                                                    "label": "telegram_user_id",
+                                                    "options": null,
+                                                    "required": false
+                                                },
+                                                {
+                                                    "help": "",
+                                                    "name": "openai_thread_id",
+                                                    "type": "text",
+                                                    "label": "openai_thread_id",
+                                                    "options": null,
+                                                    "required": false
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "parameters": {
+                                        "__IMTCONN__": {
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "supabase"
+                                            },
+                                            "label": "My Supabase connection"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "__IMTCONN__",
+                                        "type": "account:supabase",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "table",
+                                        "type": "select",
+                                        "label": "Table",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "id",
+                                        "type": "integer"
+                                    },
+                                    {
+                                        "name": "telegram_user_id",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "name": "openai_thread_id",
+                                        "type": "text"
+                                    }
+                                ],
+                                "interface": [
+                                    {
+                                        "name": "id",
+                                        "type": "number",
+                                        "label": "id"
+                                    },
+                                    {
+                                        "name": "telegram_user_id",
+                                        "type": "text",
+                                        "label": "telegram_user_id"
+                                    },
+                                    {
+                                        "name": "openai_thread_id",
+                                        "type": "text",
+                                        "label": "openai_thread_id"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 15,
+                            "module": "supabase:upsertARecord",
+                            "version": 1,
+                            "parameters": {
+                                "__IMTCONN__": 12509699
+                            },
+                            "mapper": {
+                                "id": "{{13.id}}",
+                                "table": "222(dialog history)",
+                                "thread_id": "{{4.thread_id}}"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 1256,
+                                    "y": -227
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "table": {
+                                            "mode": "chose",
+                                            "label": "222(dialog history)",
+                                            "nested": [
+                                                {
+                                                    "help": "Note:\nThis is a Primary Key.<pk/>",
+                                                    "name": "id",
+                                                    "type": "integer",
+                                                    "label": "id",
+                                                    "options": null,
+                                                    "required": false
+                                                },
+                                                {
+                                                    "help": "",
+                                                    "name": "created_at",
+                                                    "type": "text",
+                                                    "label": "created_at",
+                                                    "options": null,
+                                                    "required": false
+                                                },
+                                                {
+                                                    "help": "",
+                                                    "name": "thread_id",
+                                                    "type": "text",
+                                                    "label": "thread_id",
+                                                    "options": null,
+                                                    "required": false
+                                                },
+                                                {
+                                                    "help": "",
+                                                    "name": "role",
+                                                    "type": "text",
+                                                    "label": "role",
+                                                    "options": null,
+                                                    "required": false
+                                                },
+                                                {
+                                                    "help": "",
+                                                    "name": "content",
+                                                    "type": "text",
+                                                    "label": "content",
+                                                    "options": null,
+                                                    "required": false
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "parameters": {
+                                        "__IMTCONN__": {
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "supabase"
+                                            },
+                                            "label": "My Supabase connection"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "__IMTCONN__",
+                                        "type": "account:supabase",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "table",
+                                        "type": "select",
+                                        "label": "Table",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "id",
+                                        "type": "integer"
+                                    },
+                                    {
+                                        "name": "created_at",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "name": "thread_id",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "name": "role",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "name": "content",
+                                        "type": "text"
+                                    }
+                                ],
+                                "interface": [
+                                    {
+                                        "name": "id",
+                                        "type": "number",
+                                        "label": "id"
+                                    },
+                                    {
+                                        "name": "created_at",
+                                        "type": "text",
+                                        "label": "created_at"
+                                    },
+                                    {
+                                        "name": "thread_id",
+                                        "type": "text",
+                                        "label": "thread_id"
+                                    },
+                                    {
+                                        "name": "role",
+                                        "type": "text",
+                                        "label": "role"
+                                    },
+                                    {
+                                        "name": "content",
+                                        "type": "text",
+                                        "label": "content"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 16,
+                            "module": "supabase:createARow",
+                            "version": 1,
+                            "parameters": {
+                                "__IMTCONN__": 12509699
+                            },
+                            "mapper": {
+                                "role": "assistant",
+                                "table": "222(dialog history)",
+                                "content": "{{4.result}}",
+                                "thread_id": "{{4.thread_id}}",
+                                "created_at": "{{1.message.date}}"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 1570,
+                                    "y": -232
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "table": {
+                                            "mode": "chose",
+                                            "label": "222(dialog history)",
+                                            "nested": [
+                                                {
+                                                    "help": "Note:\nThis is a Primary Key.<pk/>",
+                                                    "name": "id",
+                                                    "type": "integer",
+                                                    "label": "id",
+                                                    "options": null,
+                                                    "required": false
+                                                },
+                                                {
+                                                    "help": "",
+                                                    "name": "created_at",
+                                                    "type": "text",
+                                                    "label": "created_at",
+                                                    "options": null,
+                                                    "required": false
+                                                },
+                                                {
+                                                    "help": "",
+                                                    "name": "thread_id",
+                                                    "type": "text",
+                                                    "label": "thread_id",
+                                                    "options": null,
+                                                    "required": false
+                                                },
+                                                {
+                                                    "help": "",
+                                                    "name": "role",
+                                                    "type": "text",
+                                                    "label": "role",
+                                                    "options": null,
+                                                    "required": false
+                                                },
+                                                {
+                                                    "help": "",
+                                                    "name": "content",
+                                                    "type": "text",
+                                                    "label": "content",
+                                                    "options": null,
+                                                    "required": false
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "parameters": {
+                                        "__IMTCONN__": {
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "supabase"
+                                            },
+                                            "label": "My Supabase connection"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "__IMTCONN__",
+                                        "type": "account:supabase",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "table",
+                                        "type": "select",
+                                        "label": "Table",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "id",
+                                        "type": "integer"
+                                    },
+                                    {
+                                        "name": "created_at",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "name": "thread_id",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "name": "role",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "name": "content",
+                                        "type": "text"
+                                    }
+                                ],
+                                "interface": [
+                                    {
+                                        "name": "id",
+                                        "type": "number",
+                                        "label": "id"
+                                    },
+                                    {
+                                        "name": "created_at",
+                                        "type": "text",
+                                        "label": "created_at"
+                                    },
+                                    {
+                                        "name": "thread_id",
+                                        "type": "text",
+                                        "label": "thread_id"
+                                    },
+                                    {
+                                        "name": "role",
+                                        "type": "text",
+                                        "label": "role"
+                                    },
+                                    {
+                                        "name": "content",
+                                        "type": "text",
+                                        "label": "content"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 7,
+                            "module": "telegram:SendReplyMessage",
+                            "version": 1,
+                            "parameters": {
+                                "__IMTCONN__": 12539108
+                            },
+                            "mapper": {
+                                "text": "{{4.result}}",
+                                "chatId": "{{1.message.chat.id}}",
+                                "parseMode": "HTML",
+                                "replyMarkup": "",
+                                "messageThreadId": "",
+                                "replyToMessageId": "",
+                                "disableWebPagePreview": true,
+                                "replyMarkupAssembleType": "reply_markup_enter"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 1854,
+                                    "y": -225
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "parseMode": {
+                                            "label": "HTML"
+                                        },
+                                        "disableNotification": {
+                                            "mode": "chose"
+                                        },
+                                        "replyMarkupAssembleType": {
+                                            "label": "Enter the Reply Markup"
+                                        }
+                                    },
+                                    "parameters": {
+                                        "__IMTCONN__": {
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "telegram"
+                                            },
+                                            "label": "TTEESSTT_assistant_bot"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "__IMTCONN__",
+                                        "type": "account:telegram",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "chatId",
+                                        "type": "text",
+                                        "label": "Chat ID",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "text",
+                                        "type": "text",
+                                        "label": "Text",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "messageThreadId",
+                                        "type": "number",
+                                        "label": "Message Thread ID"
+                                    },
+                                    {
+                                        "name": "parseMode",
+                                        "type": "select",
+                                        "label": "Parse Mode",
+                                        "validate": {
+                                            "enum": [
+                                                "Markdown",
+                                                "HTML"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "disableNotification",
+                                        "type": "boolean",
+                                        "label": "Disable Notifications"
+                                    },
+                                    {
+                                        "name": "disableWebPagePreview",
+                                        "type": "boolean",
+                                        "label": "Disable Link Previews"
+                                    },
+                                    {
+                                        "name": "replyToMessageId",
+                                        "type": "number",
+                                        "label": "Original Message ID"
+                                    },
+                                    {
+                                        "name": "replyMarkupAssembleType",
+                                        "type": "select",
+                                        "label": "Enter/Assemble the Reply Markup Field",
+                                        "validate": {
+                                            "enum": [
+                                                "reply_markup_enter",
+                                                "reply_markup_assemble"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "replyMarkup",
+                                        "type": "text",
+                                        "label": "Reply Markup"
+                                    }
+                                ],
+                                "advanced": true
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "metadata": {
+        "instant": true,
+        "version": 1,
+        "scenario": {
+            "roundtrips": 1,
+            "maxErrors": 3,
+            "autoCommit": true,
+            "autoCommitTriggerLast": true,
+            "sequential": true,
+            "slots": null,
+            "confidential": false,
+            "dataloss": false,
+            "dlq": false,
+            "freshVariables": false
+        },
+        "designer": {
+            "orphans": []
+        },
+        "zone": "eu2.make.com",
+        "notes": []
+    }
+}

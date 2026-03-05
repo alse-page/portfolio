@@ -1,0 +1,674 @@
+{
+  "name": "HR+Airtable candidate base+phone call and english level evaluation",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "YOUR_WEBHOOK_1_ID",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "cc19916f-afa6-4d28-9dbe-7e15e142ed55",
+      "name": "Webhook",
+      "webhookId": "YOUR_WEBHOOK_1_ID"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.body.data.fields[3].value[0].url }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        208,
+        -224
+      ],
+      "id": "dc54ee84-4005-401a-a783-89f45b211afb",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        368,
+        0
+      ],
+      "id": "072f00ea-0b10-4e32-b3b6-350b25d08bc6",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "YOUR_AIRTABLE_BASE_ID",
+          "mode": "list",
+          "cachedResultName": "HR System",
+          "cachedResultUrl": "https://airtable.com/YOUR_AIRTABLE_BASE_ID"
+        },
+        "table": {
+          "__rl": true,
+          "value": "YOUR_AIRTABLE_CANDIDATES_TABLE_ID",
+          "mode": "list",
+          "cachedResultName": "Candidates",
+          "cachedResultUrl": "https://airtable.com/YOUR_AIRTABLE_BASE_ID"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Full name": "={{ $('Webhook').item.json.body.data.fields[0].value }}",
+            "E-mail": "={{ $('Webhook').item.json.body.data.fields[1].value }}",
+            "Resume text": "={{ $('Extract from File').item.json.text }}",
+            "AI Score": "={{ $json.final_score }}",
+            "AI Summary": "={{ $json.final_summary }}",
+            "Resume file": "={{ [ { url: $('Webhook').item.json.body.data.fields[3].value[0].url } ] }}",
+            "Vacancy": "={{ [$('HTTP Request').item.json.body.data.fields[4].value] }}",
+            "Phone": "={{ $('Webhook').item.json.body.data.fields[1].value }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Full name",
+              "displayName": "Full name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "E-mail",
+              "displayName": "E-mail",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Resume text",
+              "displayName": "Resume text",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "AI Score",
+              "displayName": "AI Score",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "AI Summary",
+              "displayName": "AI Summary",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Resume file",
+              "displayName": "Resume file",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Vacancy",
+              "displayName": "Vacancy",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Phone",
+              "displayName": "Phone",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        912,
+        32
+      ],
+      "id": "b2e6a60a-0d21-43b4-ad0c-e7b6b9264737",
+      "name": "Create a record",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "AIRTABLE TOKEN",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "base": {
+          "__rl": true,
+          "value": "YOUR_AIRTABLE_BASE_ID",
+          "mode": "list",
+          "cachedResultName": "HR System",
+          "cachedResultUrl": "https://airtable.com/YOUR_AIRTABLE_BASE_ID"
+        },
+        "table": {
+          "__rl": true,
+          "value": "YOUR_AIRTABLE_VACANCIES_TABLE_ID",
+          "mode": "list",
+          "cachedResultName": "Vacancies",
+          "cachedResultUrl": "https://airtable.com/YOUR_AIRTABLE_BASE_ID"
+        },
+        "id": "={{ $('HTTP Request').item.json.body.data.fields[4].value }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        480,
+        -256
+      ],
+      "id": "a8948e20-5440-4442-a18e-4b02f009e873",
+      "name": "Get a record",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "AIRTABLE_TOKEN",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=You are a strict and experienced Senior Tech Recruiter. Your task is to critically evaluate a candidate's resume against a specific Job Description.\n\nJOB DESCRIPTION (Requirements & Tasks):\n{{ $json.Description }}\n\nCANDIDATE RESUME:\n{{ $('Extract from File').item.json.text }}\n\nANALYSIS INSTRUCTIONS:\n1. Look for evidence of specific Hard Skills and tools mentioned in the Job Description.\n2. If the Job Description lists \"Must have\" skills that are missing in the resume, the score cannot be higher than 40.\n3. Assess the relevance of experience. Ignore fluff words (\"communicative\", \"responsible\"), focus on facts and achievements.\n4. Be critical. Do not hallucinate skills that are not there.\n\nRESPONSE FORMAT (STRICT JSON):\nReturn a valid JSON object with exactly two fields:\n{\n  \"score\": (Integer 0-100. <50: Reject, 50-70: Maybe/Risky, >70: Good fit, >90: Ideal match),\n  \"summary\": (String in ENGLISH. Structure:\n   - VERDICT: (Rejected / On Hold / Strong Hire)\n   - PROS: (Top 3 strengths strictly related to this job)\n   - CONS/RISKS: (Missing skills, gaps, or lack of relevant experience)\n   - CONCLUSION: (One sentence summary))\n}"
+            }
+          ]
+        },
+        "simplify": false,
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.1,
+      "position": [
+        576,
+        32
+      ],
+      "id": "cff0db3b-5ebb-4701-9dcf-0e592bde6a63",
+      "name": "Message a model",
+      "credentials": {
+        "openAiApi": {
+          "id": "YOUR_OPENAI_CREDENTIAL_ID_2",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1. Retrieve AI response\nconst item = $input.item.json;\nlet rawText;\n\n// Check deeply nested structure\nif (item.output && item.output[0] && item.output[0].content && item.output[0].content[0]) {\n    rawText = item.output[0].content[0].text;\n} else if (item.message && item.message.content) {\n    rawText = item.message.content;\n} else {\n    rawText = item.text || \"{}\";\n}\n\n// 2. Clean and Parse JSON\nconst cleanJson = String(rawText)\n    .replace(/```json/g, '')\n    .replace(/```/g, '')\n    .trim();\n\nlet aiData = {};\n\ntry {\n    aiData = JSON.parse(cleanJson);\n} catch (e) {\n    aiData = { score: 0, summary: \"Error parsing AI response\" };\n}\n\n// 3. FORMATTING WITH MARKDOWN & EMOJIS ✨\n// Airtable Rich Text field supports Markdown!\n\nlet summaryText = aiData.summary;\n\nif (typeof aiData.summary === 'object') {\n    const s = aiData.summary;\n    \n       let verdictIcon = '⚠️';\n    if (String(s.VERDICT).toLowerCase().includes('reject')) verdictIcon = '❌';\n    if (String(s.VERDICT).toLowerCase().includes('hire')) verdictIcon = '✅';\n    if (String(s.VERDICT).toLowerCase().includes('good')) verdictIcon = '✅';\n\n        const pros = Array.isArray(s.PROS) ? s.PROS.map(p => `- ${p}`).join('\\n') : s.PROS;\n    const cons = Array.isArray(s['CONS/RISKS']) ? s['CONS/RISKS'].map(c => `- ${c}`).join('\\n') : s['CONS/RISKS'];\n\n        summaryText = \n`**VERDICT:** ${verdictIcon} ${s.VERDICT}\n\n**PROS:**\n${pros}\n\n**CONS/RISKS:**\n${cons}\n\n**CONCLUSION:**\n_${s.CONCLUSION}_`;\n}\n\n// 4. Return\nreturn {\n    json: {\n        final_score: aiData.score,\n        final_summary: summaryText\n    }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        800,
+        -272
+      ],
+      "id": "a987466c-cf87-4265-a605-aa51b1452156",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.vapi.ai/call/phone",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"assistantId\": \"YOUR_VAPI_ASSISTANT_ID\",\n  \"phoneNumberId\": \"YOUR_VAPI_PHONE_NUMBER_ID\",\n  \"customer\": {\n    \"number\": \"{{ $('Webhook').item.json.body.data.fields[2].value }}\", \n    \"name\": \"{{ $('Webhook').item.json.body.data.fields[0].value }}\"\n  },\n  \"assistantOverrides\": {\n    \"variableValues\": {\n      \"position\": \"AI Automation Engineer\",\n      \"skill\": \"n8n and Make.com\"\n    }\n  },\n  \"metadata\": {\n    \"airtable_record_id\": \"{{ $json.id }}\"\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        1280,
+        48
+      ],
+      "id": "043915f7-53bc-4b24-86bd-3411ba9d21d4",
+      "name": "HTTP Request1",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "YOUR_VAPI_CREDENTIAL_ID",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "YOUR_AIRTABLE_BASE_ID",
+          "mode": "list",
+          "cachedResultName": "HR System",
+          "cachedResultUrl": "https://airtable.com/YOUR_AIRTABLE_BASE_ID"
+        },
+        "table": {
+          "__rl": true,
+          "value": "YOUR_AIRTABLE_CANDIDATES_TABLE_ID",
+          "mode": "list",
+          "cachedResultName": "Candidates",
+          "cachedResultUrl": "https://airtable.com/YOUR_AIRTABLE_BASE_ID"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Call Summary": "={{ $json.body.message.analysis.candidate_experience }}",
+            "English Level": "={{ $json.body.message.analysis.structuredData.english_level }}",
+            "Call recomendation": "={{ $json.body.message.analysis.structuredData.recommendation }}",
+            "id": "={{ $json.body.message.call.metadata.airtable_record_id }}",
+            "AI Score": 0
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "Full name",
+              "displayName": "Full name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "E-mail",
+              "displayName": "E-mail",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Resume text",
+              "displayName": "Resume text",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "AI Score",
+              "displayName": "AI Score",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "AI Summary",
+              "displayName": "AI Summary",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Resume file",
+              "displayName": "Resume file",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Vacancy",
+              "displayName": "Vacancy",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Phone",
+              "displayName": "Phone",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Call Summary",
+              "displayName": "Call Summary",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "English Level",
+              "displayName": "English Level",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Call recomendation",
+              "displayName": "Call recomendation",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        576,
+        256
+      ],
+      "id": "350e02d4-ec14-4856-a1e7-c7c7ae5add6d",
+      "name": "Update record",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "YOUR_AIRTABLE_CREDENTIAL_ID",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "YOUR_WEBHOOK_2_ID",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        144,
+        256
+      ],
+      "id": "f377e734-add1-4fc1-b765-801509b35b4f",
+      "name": "Webhook1",
+      "webhookId": "WEBHOOK_ID"
+    },
+    {
+      "parameters": {
+        "content": "Phase 1: Lead Capture & AI Resume Scoring",
+        "height": 80
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -160,
+        -160
+      ],
+      "id": "14f50756-caf2-4aa2-add8-ca3c1e5858e0",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "Phase 2: Async Voice AI Report Processing",
+        "height": 80
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -144,
+        272
+      ],
+      "id": "f024307e-61dd-4161-a74a-03b6e5594a6d",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "3359914c-b6ef-4b4e-af9a-bf7afb1a0099",
+              "leftValue": "={{ $json.fields['AI Score'] }}",
+              "rightValue": 50,
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1104,
+        -256
+      ],
+      "id": "22166b1c-69c6-46b4-b561-2943bb4c4ce8",
+      "name": "If"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Get a record",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a record": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Create a record",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create a record": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook1": {
+      "main": [
+        [
+          {
+            "node": "Update record",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "YOUR_VERSION_ID",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "YOUR_INSTANCE_ID
+  },
+  "id": "YOUR_WORKFLOW_ID",
+  "tags": []
+}
